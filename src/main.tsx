@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { createRoot } from 'react-dom/client'
-import { CopilotKit, CopilotChat } from '@copilotkit/react-core'
-import '@copilotkit/react-ui/styles.css'
+import { CopilotKit, CopilotChat } from '@copilotkit/react-core/v2'
+import '@copilotkit/react-core/v2/styles.css'
 import './styles.css'
 
 function App() {
@@ -54,11 +54,17 @@ function App() {
         </aside>
       </section>
 
-      <section className="chat"><CopilotChat labels={{ title: 'Ask TerraPilot', initial: 'What should I verify or change about this trip?' }} /></section>
+      <section className="chat">
+        <CopilotChat agentId="terrapilot" labels={{ title: 'Ask TerraPilot', initial: 'What should I verify or change about this trip?' }} />
+      </section>
     </main>
   )
 }
 
 createRoot(document.getElementById('root')!).render(
-  <React.StrictMode><CopilotKit runtimeUrl="http://localhost:3001/api/copilotkit"><App /></CopilotKit></React.StrictMode>
+  <React.StrictMode>
+    <CopilotKit runtimeUrl="http://localhost:3001/api/copilotkit" agent="terrapilot">
+      <App />
+    </CopilotKit>
+  </React.StrictMode>,
 )
