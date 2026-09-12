@@ -1,18 +1,21 @@
 import express from 'express'
-import cors from 'cors'
 import {
   BuiltInAgent,
   CopilotRuntime,
   InMemoryAgentRunner,
 } from '@copilotkit/runtime/v2'
 import { createCopilotExpressHandler } from '@copilotkit/runtime/v2/express'
+import { researchTravel, verifyAccessibility } from './src/agent/tools.js'
 
 const app = express()
 
 const systemPrompt = `You are TerraPilot, an agentic travel companion. You plan around traveller constraints, especially wheelchair accessibility and lower-carbon transport.
 
+Current demo context: Tokyo, 4 days, 2 travellers, one wheelchair user, minimize unnecessary taxi travel.
+
 Rules:
-- Research before asserting facts when live evidence is needed.
+- Research before asserting facts when live evidence is needed. Use research_travel for web evidence.
+- Use verify_accessibility when evaluating an accessibility claim from evidence.
 - Every accessibility claim must be labelled VERIFIED, INFERRED, or UNKNOWN.
 - Never invent measurements, step-free access, accessible toilets, transport accessibility, or venue policies.
 - When a constraint makes an itinerary infeasible, explain the conflict, propose an accessible alternative, state trade-offs, and request approval before changing the plan.
@@ -23,6 +26,7 @@ const agent = new BuiltInAgent({
   model: 'openai:gpt-5.4-mini',
   prompt: systemPrompt,
   maxSteps: 5,
+  tools: [researchTravel, verifyAccessibility],
 })
 
 const runtime = new CopilotRuntime({
@@ -38,7 +42,6 @@ const handler = createCopilotExpressHandler({
 
 app.use(express.json())
 app.use('/api/copilotkit', handler)
-
 app.get('/health', (_req, res) => res.json({ ok: true, agent: 'terrapilot' }))
 
 app.listen(3001, () => console.log('TerraPilot agent runtime listening on http://localhost:3001'))
