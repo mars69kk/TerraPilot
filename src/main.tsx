@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { createRoot } from 'react-dom/client'
-import { CopilotKit, CopilotChat } from '@copilotkit/react-core/v2'
+import { CopilotKitProvider, CopilotChat } from '@copilotkit/react-core/v2'
 import '@copilotkit/react-core/v2/styles.css'
 import './styles.css'
 
@@ -63,8 +63,8 @@ function App() {
 
 createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <CopilotKit runtimeUrl="http://localhost:3001/api/copilotkit" agent="terrapilot">
+    <CopilotKitProvider runtimeUrl="http://localhost:3001/api/copilotkit" agentId="terrapilot">
       <App />
-    </CopilotKit>
+    </CopilotKitProvider>
   </React.StrictMode>,
 )
